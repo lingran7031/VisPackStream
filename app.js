@@ -2,8 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const dispatchAlarm = require("./alarmRouter");
 const os = require('os');
-
-
+const multer = require('multer');
+const upload = multer(); // 使用内存存储
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.post(path, (req, res) => {
   res.status(200).send("报警已处理");
 });
 
-app.listen(PORT, () => {
+app.listen(PORT,  upload.any(), () => {
   console.info("VisPackStream 报警系统已启动，监听端口 3000");
   console.info(`本地访问地址:   http://localhost:${PORT}${path}`);
   console.info(`网络访问地址: http://${localIP}:${PORT}${path}`);
