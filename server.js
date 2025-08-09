@@ -24,7 +24,8 @@ function getLocalIP() {
 }
 
 app.post('/alarm', (req, res) => {
-  console.log('Received data:', req.body);
+  console.log('Received data:', JSON.stringify(req.body));
+
   res.send('Alarm received');
 });
 
