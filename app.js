@@ -1,20 +1,21 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
-const dispatchAlarm = require("./alarmRouter");
 const os = require('os');
-const multer = require('multer');
+const multer = require('multer');;
 const upload = multer(); // 使用内存存储
-
 const app = express();
-
 const PORT = 3000;
 const path = '/alarm';
+const dispatchAlarm = require("./alarmRouter");
+const { pushAlarmData } = require("./pushService")
+
+
 const localIP = getLocalIP();
 
+//中间件
 app.use(cookieParser());
 
 app.post(path, upload.any(), (req, res) => {
-  console.log("原始 req.body:", req.body);
 
   let alarmData;
   try {
@@ -23,15 +24,14 @@ app.post(path, upload.any(), (req, res) => {
     console.error("JSON 解析失败:", err);
     return res.status(400).send("Invalid JSON in alarm_info");
   }
-
   console.log("解析后的报警数据:", alarmData);
-
   // 分发处理
-  dispatchAlarm(alarmData);
+  const alarmInfo = dispatchAlarm(alarmData);
+  //数据转发
+  pushAlarmData(alarmInfo);
 
   res.status(200).send("success");
 });
-
 
 app.listen(PORT,  upload.any(), () => {
   console.info("VisPackStream 报警系统已启动，监听端口 3000");

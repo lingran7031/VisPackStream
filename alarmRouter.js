@@ -1,33 +1,24 @@
 const { classifyAlarm } = require("./alarmTypes");
-const handleAlertAlarm = require("./handlers/alertAlarmHandler");
-//const handleGoodsAlarm = require("./handlers/goodsAlarmHandler");
-// ...其他处理器
-
-const AlarmHandlers = {
-    alert_alarm: handleAlertAlarm,
-    //goods_alarm: handleGoodsAlarm,
-    // ...
-};
+const alarmTypeMap = require("./Resource/alarmTypeDictionary.js");
 
 function dispatchAlarm(data) {
-    console.log("断点:", data);
     const alarmMajor = data?.additional?.alarm_major;
     const alarmMinor = data?.additional?.alarm_minor;
-
-    console.log("alarmMajor:", alarmMajor);
-    console.log("alarmMinor:", alarmMinor);
+    const alarmTypeCN = alarmTypeMap[alarmMajor]?.[alarmMinor] || "未知告警";
+    const areaIds = data.warehouseV20Events?.alarmEvents?.[0]?.areaIds || [];
+    const targets = data.warehouseV20Events?.alarmEvents?.[0]?.targets || [];
+    const targetType = targets.length > 0 ? targets.map(t => t.targetType).join(", ") : "无目标对象";
+    const timestamp = data.warehouseV20Events?.pts;
+    const captureTime = new Date(timestamp).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" });
     const result = classifyAlarm(alarmMajor, alarmMinor);
     if (!result.valid) {
         console.warn("报警分类失败:", result.reason);
-        return;
-    }
-
-    const handler = AlarmHandlers[alarmMajor];
-    if (handler) {
-        handler(alarmMinor, data);
-    } else {
-        console.warn("未定义的报警主类型处理器:", alarmMajor);
-    }
+    } return {
+        alert_alarm: alarmTypeCN,
+        targetType: targetType,
+        areaIds: areaIds.join(", "),
+        captureTime: captureTime
+    };
 }
 
 module.exports = dispatchAlarm;
