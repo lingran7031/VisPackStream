@@ -14,10 +14,24 @@ const localIP = getLocalIP();
 app.use(cookieParser());
 
 app.post(path, upload.any(), (req, res) => {
-  dispatchAlarm(req.body.alarm_info);
-  console.info("收到报警数据:",  req.body.alarm_info);
+  console.log("原始 req.body:", req.body);
+
+  let alarmData;
+  try {
+    alarmData = JSON.parse(req.body.alarm_info);
+  } catch (err) {
+    console.error("JSON 解析失败:", err);
+    return res.status(400).send("Invalid JSON in alarm_info");
+  }
+
+  console.log("解析后的报警数据:", alarmData);
+
+  // 分发处理
+  dispatchAlarm(alarmData);
+
   res.status(200).send("success");
 });
+
 
 app.listen(PORT,  upload.any(), () => {
   console.info("VisPackStream 报警系统已启动，监听端口 3000");
