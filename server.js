@@ -4,13 +4,6 @@ const cookieParser = require('cookie-parser');
 const os = require('os');
 const fs = require('fs');
 
-const app = express();
-const PORT = 3000;
-
-// 中间件
-app.use(bodyParser.json());
-app.use(cookieParser());
-
 // 获取本机 IP 地址
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
@@ -24,13 +17,24 @@ function getLocalIP() {
   return '127.0.0.1';
 }
 
+const app = express();
+const PORT = 3000;
+
+// 中间件
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+
 app.post('/alarm', (req, res) => {
-  console.log('Received data:', JSON.stringify(req.data));
-
-//返回
-  res.sendStatus(200);
+  console.log('接收到报警数据，开始写入文件');
+  //将抓取到的数据包格式化后写入文件
+  fs.writeFileSync('alarm_' + Date.now() + '.json', req, null, 2);
+  //返回
+  return res.status(200).json({
+    code: 200,
+    msg: 'success',
+  });
 });
-
 
 // 启动服务器并打印本机 IP
 app.listen(PORT, () => {
