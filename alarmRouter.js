@@ -10,13 +10,12 @@ const AlarmHandlers = {
 };
 
 function dispatchAlarm(data) {
-    console.info("data:", data);
-
+    console.log("断点:", data);
     const alarmMajor = data?.additional?.alarm_major;
     const alarmMinor = data?.additional?.alarm_minor;
-    console.info("alarmMajor:", alarmMajor);
-    console.info("alarmMinor:", alarmMinor);
 
+    console.log("alarmMajor:", alarmMajor);
+    console.log("alarmMinor:", alarmMinor);
     const result = classifyAlarm(alarmMajor, alarmMinor);
     if (!result.valid) {
         console.warn("报警分类失败:", result.reason);
