@@ -15,9 +15,7 @@ app.use(bodyParser.json());
 app.post(path, (req, res) => {
   const alarmData = req.body;
   dispatchAlarm(alarmData);
-  console.log("报警数据:", alarmData);
-
-
+  console.info("收到报警数据:", JSON.stringify(alarmData));
   res.status(200).send("报警已处理");
 });
 
@@ -25,6 +23,7 @@ app.listen(PORT, () => {
   console.info("VisPackStream 报警系统已启动，监听端口 3000");
   console.info(`本地访问地址:   http://localhost:${PORT}${path}`);
   console.info(`网络访问地址: http://${localIP}:${PORT}${path}`);
+
 });
 
 // 获取本机 IP 地址
