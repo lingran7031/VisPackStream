@@ -29,7 +29,7 @@ app.post('/alarm', (req, res) => {
   console.log('接收到报警数据，开始写入文件');
   //将抓取到的数据包格式化后写入文件
 
-  fs.writeFileSync('alarm_' + Date.now() + '.json', req);
+  fs.writeFileSync('alarm.json', req);//
   //返回
   return res.status(200).json({
     code: 200,
