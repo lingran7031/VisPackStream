@@ -14,10 +14,9 @@ const localIP = getLocalIP();
 app.use(cookieParser());
 
 app.post(path, upload.any(), (req, res) => {
-  dispatchAlarm(req.body);
-  console.info("收到报警数据:",  req.body);
+  dispatchAlarm(req.body.alarm_info);
+  console.info("收到报警数据:",  req.body.alarm_info);
   res.status(200).send("success");
-
 });
 
 app.listen(PORT,  upload.any(), () => {
