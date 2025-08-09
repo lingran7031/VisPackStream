@@ -23,22 +23,16 @@ function getLocalIP() {
   return '127.0.0.1';
 }
 
-// 示例 API 路由
-app.get('/', (req, res) => {
-  res.send('VisPackStream Server is running!');
-
-});
-
 app.post('/alarm', (req, res) => {
-  const { message } = req.body;
-  console.log(`Received alarm: ${message}`);
-  res.status(200).json({ status: 'Alarm received', message });
+  console.log('Received data:', req.body);
+  res.send('Alarm received');
 });
+
 
 // 启动服务器并打印本机 IP
 app.listen(PORT, () => {
   const localIP = getLocalIP();
   console.log(`Alarm Push Server running at:`);
-  console.log(`   Local:   http://localhost:${PORT}`);
-  console.log(`   Network: http://${localIP}:${PORT}`);
+  console.log(`   Local:   http://localhost:${PORT}/alarm`);
+  console.log(`   Network: http://${localIP}:${PORT}/alarm`);
 });
