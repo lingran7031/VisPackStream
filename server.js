@@ -19,18 +19,18 @@ function getLocalIP() {
 
 const app = express();
 const PORT = 3000;
+const path = '/alarm';
 
 // 中间件
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 
-app.post('/alarm', (req, res) => {
-  console.log('接收到报警数据，开始写入文件');
-  //将抓取到的数据包格式化后写入文件
+app.post(path, (req, res) => {
 
-  fs.writeFileSync('alarm.json', req);//
-  //返回
+  console.log('接收到报警数据');
+  console.log(req);
+
   return res.status(200).json({
     code: 200,
     msg: 'success',
@@ -40,7 +40,7 @@ app.post('/alarm', (req, res) => {
 // 启动服务器并打印本机 IP
 app.listen(PORT, () => {
   const localIP = getLocalIP();
-  console.log(`Alarm Push Server running at:`);
-  console.log(`   Local:   http://localhost:${PORT}/alarm`);
-  console.log(`   Network: http://${localIP}:${PORT}/alarm`);
+  console.log(`VisPackStream 服务启动成功，端口：${PORT}`);
+  console.log(`   本地访问地址:   http://localhost:${PORT}${path}`);
+  console.log(`   网络访问地址: http://${localIP}:${PORT}${path}`);
 });
