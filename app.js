@@ -15,6 +15,9 @@ app.use(bodyParser.json());
 app.post(path, (req, res) => {
   const alarmData = req.body;
   dispatchAlarm(alarmData);
+  console.log("报警数据:", alarmData);
+
+
   res.status(200).send("报警已处理");
 });
 
