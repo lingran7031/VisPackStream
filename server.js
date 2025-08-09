@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const os = require('os');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
@@ -24,9 +25,10 @@ function getLocalIP() {
 }
 
 app.post('/alarm', (req, res) => {
-  console.log('Received data:', JSON.stringify(req.body));
+  console.log('Received data:', JSON.stringify(req.data));
 
-  res.send('Alarm received');
+//返回
+  res.sendStatus(200);
 });
 
 
