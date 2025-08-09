@@ -1,5 +1,5 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 const dispatchAlarm = require("./alarmRouter");
 const os = require('os');
 const multer = require('multer');
@@ -10,13 +10,14 @@ const app = express();
 const PORT = 3000;
 const path = '/alarm';
 const localIP = getLocalIP();
-app.use(bodyParser.json());
 
-app.post(path, (req, res) => {
-  const alarmData = req.body;
-  dispatchAlarm(alarmData);
-  console.info("收到报警数据:", JSON.stringify(alarmData));
-  res.status(200).send("报警已处理");
+app.use(cookieParser());
+
+app.post(path, upload.any(), (req, res) => {
+  dispatchAlarm(req.body);
+  console.info("收到报警数据:",  req.body);
+  res.status(200).send("success");
+
 });
 
 app.listen(PORT,  upload.any(), () => {
