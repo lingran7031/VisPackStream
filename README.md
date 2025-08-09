@@ -1,9 +1,25 @@
 # VisPackStream
 test
-启动
+
+## 安装
+使用gitee仓库
+
+使用github仓库
+
 ````
-node server.js
+git clone https://github.com/lingran7031/VisPackStream.git
+cd VisPackStream
+````
+````
+git clone https://gitee.com/lingran7031/VisPackStream.git
+cd VisPackStream
+````
+
+## 启动
+````
+node app
 ````
 ````
  npm start
 ````
+
