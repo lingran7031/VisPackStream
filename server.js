@@ -1,8 +1,12 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const os = require('os');
-const fs = require('fs');
+const multer = require('multer');
+const upload = multer(); // 使用内存存储
+
+const app = express();
+const PORT = 3000;
+const path = '/alarm';
 
 // 获取本机 IP 地址
 function getLocalIP() {
@@ -17,19 +21,18 @@ function getLocalIP() {
   return '127.0.0.1';
 }
 
-const app = express();
-const PORT = 3000;
-const path = '/alarm';
-
 // 中间件
-app.use(bodyParser.json());
 app.use(cookieParser());
 
-
-app.post(path, (req, res) => {
-
+// 使用 multer 解析 multipart/form-data
+app.post(path, upload.any(), (req, res) => {
   console.log('接收到报警数据');
-  console.log(req);
+
+  // 打印字段数据
+  console.log('Fields:', req.body);
+
+  // 打印文件数据（如果有）
+  console.log('Files:', req.files);
 
   return res.status(200).json({
     code: 200,
