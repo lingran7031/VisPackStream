@@ -17,7 +17,7 @@ function dispatchAlarm(data) {
         alert_alarm: alarmTypeCN,
         targetType: targetType,
         areaIds: areaIds.join(", "),
-        captureTime: captureTime
+        Time: captureTime
     };
 }
 
