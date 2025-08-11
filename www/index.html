@@ -126,6 +126,32 @@
             .catch(err => {
                 console.error("请求失败", err);
             });
+        function loadAlarmLogs() {
+            fetch("/alarm-log")
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = "/login.html";
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(logs => {
+                    const ul = document.getElementById("logs");
+                    ul.innerHTML = ""; // 清空旧内容
+                    logs.forEach(log => {
+                        const li = document.createElement("li");
+                        li.textContent = `[${log.time}] ${JSON.stringify(log.data)}`;
+                        ul.appendChild(li);
+                    });
+                });
+        }
+
+        // 初次加载
+        loadAlarmLogs();
+
+        // 每隔 5 秒自动刷新
+        setInterval(loadAlarmLogs, 5000);
+
 
     </script>
 </body>
