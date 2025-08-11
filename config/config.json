@@ -1,0 +1,7 @@
+{
+  "username": "admin",
+  "password": "123456",
+  "port": 8080,
+  "path": "/alarm",
+  "targetUrl": "http://172.26.32.158:10063/http/rest"
+}

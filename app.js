@@ -1,53 +1,166 @@
-const dispatchAlarm = require("./lib/alarmRouter");
-const { pushAlarmData } = require("./lib/pushService")
-const cookieParser = require('cookie-parser');
 const express = require("express");
-const multer = require('multer');;
-const os = require('os');
-const upload = multer(); // 使用内存存储
-const app = express();
-const PORT = 3000;
-const path = '/alarm';
+const multer = require("multer");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const pathModule = require("path");
+const os = require("os");
+const osUtils = require("os-utils");
+const http = require("http");
 
-const localIP = getLocalIP();
+const { pushAlarmData } = require("./lib/pushService");
+const dispatchAlarm = require("./lib/alarmRouter");
+const { getConfig, updateConfig } = require("./lib/config");
 
-//中间件
-app.use(cookieParser());
+const upload = multer();
+let alarmServer = null;
+const alarmLogs = [];
 
-app.post(path, upload.any(), (req, res) => {
+function startAlarmService(config) {
+  const alarmApp = express();
+  alarmApp.use(cookieParser());
 
-  let alarmData;
-  try {
-    alarmData = JSON.parse(req.body.alarm_info);
-  } catch (err) {
-    console.error("JSON 解析失败:", err);
-    return res.status(400).send("Invalid JSON in alarm_info");
+  alarmApp.post(config.path, upload.any(), (req, res) => {
+    let alarmData;
+    try {
+      alarmData = JSON.parse(req.body.alarm_info);
+    } catch (err) {
+      console.error("JSON 解析失败:", err);
+      return res.status(400).send("Invalid JSON");
+    }
+
+    const alarmInfo = dispatchAlarm(alarmData);
+    pushAlarmData(alarmInfo);
+
+    alarmLogs.unshift({ time: new Date().toLocaleString(), data: alarmInfo });
+    if (alarmLogs.length > 20) alarmLogs.pop();
+
+    res.status(200).send("success");
+  });
+
+  if (alarmServer) {
+    alarmServer.close(() => console.info("🔄 旧报警服务已关闭"));
   }
-  console.log("解析后的报警数据:", alarmData); 
-  // 分发处理
-  const alarmInfo = dispatchAlarm(alarmData);
-  //数据转发
-  pushAlarmData(alarmInfo);
 
-  res.status(200).send("success");
+  alarmServer = http.createServer(alarmApp);
+  alarmServer.listen(config.port, () => {
+    console.info(`报警服务启动: http://localhost:${config.port}${config.path}`);
+  });
+}
+
+startAlarmService(getConfig());
+
+const webApp = express();
+webApp.use(cookieParser());
+webApp.use(bodyParser.urlencoded({ extended: true }));
+webApp.use(bodyParser.json());
+webApp.use(express.static(pathModule.join(__dirname, "www")));
+webApp.use(session({
+  secret: "alarm-secret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 3600000 }
+}));
+
+function requireAuth(req, res, next) {
+  if (req.session?.authenticated) return next();
+
+  // 对 HTML 页面请求，重定向
+  if (req.originalUrl.endsWith(".html")) {
+    return res.redirect("/login.html");
+  }
+
+  // 对 API 请求，返回 JSON
+  res.status(401).json({ error: "未登录或会话已过期" });
+}
+
+
+webApp.get("/", (req, res) => {
+  res.redirect(req.session?.authenticated ? "/index.html" : "/login.html");
 });
 
-app.listen(PORT,  upload.any(), () => {
-  console.info("VisPackStream 报警系统已启动，监听端口 3000");
-  console.info(`本地访问地址:   http://localhost:${PORT}${path}`);
-  console.info(`网络访问地址: http://${localIP}:${PORT}${path}`);
+webApp.post("/login", (req, res) => {
+  const { username, password, remember } = req.body;
+  const config = getConfig();
+  if (username === config.username && password === config.password) {
+    req.session.authenticated = true;
+    req.session.username = username;
+    if (remember) req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000;
+    res.redirect("/index.html");
 
+  } else {
+    res.send("登录失败，请检查用户名和密码");
+  }
 });
 
-// 获取本机 IP 地址
+webApp.get("/logout", (req, res) => {
+  req.session.destroy(() => res.redirect("/login.html"));
+});
+
+webApp.get("/user-info", requireAuth, (req, res) => {
+  res.json({ username: req.session.username });
+});
+
+webApp.get("/get-config", requireAuth, (req, res) => {
+  res.json(getConfig());
+});
+
+webApp.post("/update-config", requireAuth, (req, res) => {
+  const { port, path, targetUrl } = req.body;
+  updateConfig({ port: parseInt(port), path, targetUrl });
+  res.status(200).send("ok");
+});
+
+webApp.post("/update-config-restart", requireAuth, (req, res) => {
+  const { port, path, targetUrl } = req.body;
+  const newConfig = { port: parseInt(port), path, targetUrl };
+  updateConfig(newConfig);
+  res.status(200).send("ok");
+  console.info("🌀 配置已更新，正在热重载报警服务...");
+  startAlarmService(newConfig);
+});
+
+webApp.get("/config.html", requireAuth, (req, res) => {
+  res.sendFile(pathModule.join(__dirname, "www", "config.html"));
+});
+
+webApp.get("/index.html", requireAuth, (req, res) => {
+  res.sendFile(pathModule.join(__dirname, "www", "index.html"));
+});
+
+webApp.get("/system-info", requireAuth, (req, res) => {
+  const config = getConfig();
+  osUtils.cpuUsage(cpu => {
+    res.json({
+      ip: getLocalIP(),
+      port: config.port,
+      path: config.path,
+      targetUrl: config.targetUrl,
+      memory: {
+        total: os.totalmem(),
+        free: os.freemem()
+      },
+      cpu: (cpu * 100).toFixed(2)
+    });
+  });
+});
+
+webApp.get("/alarm-log", requireAuth, (req, res) => {
+  res.json(alarmLogs);
+});
+
+webApp.listen(80, () => {
+  console.info("网页控制台已启动: http://localhost/index.html");
+});
+
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name]) {
-      if (iface.family === 'IPv4' && !iface.internal) {
+      if (iface.family === "IPv4" && !iface.internal) {
         return iface.address;
       }
     }
   }
-  return '127.0.0.1';
+  return "127.0.0.1";
 }

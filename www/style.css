@@ -1,0 +1,221 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background: #0078d4;
+    color: white;
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar div:first-child {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 24px;
+    font-weight: 500;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.navbar a:hover {
+    color: #cce6ff;
+    text-decoration: underline;
+}
+
+.navbar a.active {
+    border-bottom: 2px solid white;
+    padding-bottom: 2px;
+}
+
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+form label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+button:hover {
+    background: #005fa3;
+}
+
+#status {
+    margin-top: 20px;
+    color: green;
+    font-weight: bold;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+ul li {
+    margin-bottom: 8px;
+    font-family: monospace;
+    background: #f9f9f9;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.progress-bar {
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 16px;
+    margin-top: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #0078d4;
+    transition: width 0.3s ease;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.card h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.copy-btn {
+    background: #0078d4;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.copy-btn:hover {
+    background: #005fa3;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.chart {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.chart svg {
+    transform: rotate(-90deg);
+}
+
+.chart circle {
+    fill: none;
+    stroke-width: 10;
+}
+
+.chart .bg {
+    stroke: #e0e0e0;
+}
+
+.chart .value {
+    stroke: #0078d4;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.5s ease;
+}
+
+.chart-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 16px;
+}
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  white-space: nowrap; /* 防止换行 */
+  overflow: hidden;
+}
+
+.info-row span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 显示省略号 */
+  white-space: nowrap;
+}
+
+.copy-btn {
+  margin-left: 10px;
+  flex-shrink: 0; /* 防止按钮被压缩 */
+}

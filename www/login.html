@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>登录 - 报警系统</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+      width: 100%;
+      max-width: 320px;
+      box-sizing: border-box;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #333;
+    }
+
+    .login-box input[type="text"],
+    .login-box input[type="password"],
+    .login-box button {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      border: 1px solid #ccc;
+    }
+
+    .login-box button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .login-box button:hover {
+      background: #005fa3;
+    }
+
+    .login-box label {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      color: #555;
+    }
+
+    .login-box input[type="checkbox"] {
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <form class="login-box" method="POST" action="/login">
+    <h2>系统登录</h2>
+    <input type="text" name="username" placeholder="用户名" required />
+    <input type="password" name="password" placeholder="密码" required />
+    <label><input type="checkbox" name="remember" /> 记住我</label>
+    <button type="submit">登录</button>
+  </form>
+</body>
+</html>
