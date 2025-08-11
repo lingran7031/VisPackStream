@@ -1,14 +1,13 @@
-const express = require("express");
+const dispatchAlarm = require("./lib/alarmRouter");
+const { pushAlarmData } = require("./lib/pushService")
 const cookieParser = require('cookie-parser');
-const os = require('os');
+const express = require("express");
 const multer = require('multer');;
+const os = require('os');
 const upload = multer(); // 使用内存存储
 const app = express();
 const PORT = 3000;
 const path = '/alarm';
-const dispatchAlarm = require("./alarmRouter");
-const { pushAlarmData } = require("./pushService")
-
 
 const localIP = getLocalIP();
 
