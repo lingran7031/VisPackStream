@@ -23,7 +23,7 @@ app.post(path, upload.any(), (req, res) => {
     console.error("JSON 解析失败:", err);
     return res.status(400).send("Invalid JSON in alarm_info");
   }
-  console.log("解析后的报警数据:", alarmData);
+  console.log("解析后的报警数据:", alarmData); 
   // 分发处理
   const alarmInfo = dispatchAlarm(alarmData);
   //数据转发
