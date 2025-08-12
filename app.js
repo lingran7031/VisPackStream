@@ -75,8 +75,6 @@ function requireAuth(req, res, next) {
 
   // 对 API 请求，返回 JSON
   res.status(401).json({ error: "未登录或会话已过期" });
-  alarmLogs.unshift({ time: new Date().toLocaleString(), data: "未登录或会话已过期" });
-  if (alarmLogs.length > 20) alarmLogs.pop();
 }
 
 
