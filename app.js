@@ -42,10 +42,9 @@ function startAlarmService(config) {
     infologs.unshift({ time: new Date().toLocaleString(), data: response });
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
-    console.log(req.files)
-
-    //alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
-    //alarmlogs.data=alarmData;//数据
+    const img =`data:${req.files[0].mimetype};base64,${base64.encode(req.files[0].buffer)}`
+    alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
+    alarmlogs.data=alarmData;//数据
 
   });
 
