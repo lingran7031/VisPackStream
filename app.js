@@ -164,11 +164,11 @@ webApp.get("/system-info", requireAuth, (req, res) => {
 webApp.get("/info-log", requireAuth, (req, res) => {
   res.json(infologs);
 });
-/*
+
 webApp.get("/alarm-log", requireAuth, (req, res) => {
   res.json(alarmlogs);
 });
-*/
+
 webApp.listen(80, () => {
   console.info("网页控制台已启动: http://localhost/index.html");
   infologs.unshift({ time: new Date().toLocaleString(), data: "网页控制台已启动" });
