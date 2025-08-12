@@ -41,7 +41,6 @@
                 </div>
 
             </div>
-
             <!-- 系统占用卡片 -->
             <div class="card">
                 <h2>系统占用</h2>
@@ -66,13 +65,42 @@
             </div>
         </div>
 
-        <!-- 报警日志卡片 -->
-        <div class="card log-card">
+        <!-- 接收信息卡片 -->
+        <div class="card alarm-card alert">
+            <h2>接收信息</h2>
+            <div class="grid">
+                <div>
+                    <img id="alarm-img" alt="抓拍图片"  rcs=# width="65%" height="65%">
+
+
+                </div>
+                <div>
+                    <div class="info-row">
+                        <strong>告警类型:</strong>
+                        <span id="alert_alarm">无</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>目标类型:</strong>
+                        <span id="targetType">无</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>区域ID:</strong>
+                        <span id="areaIds">无</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>时间:</strong>
+                        <span id="Time">无</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统日志卡片 -->
+        <div class="card log-card info">
             <h2>系统日志</h2>
-            <ul id="logs"></ul>
+            <ul id="infologs"></ul>
         </div>
     </div>
-
     <script>
         function copyText(id) {
             const text = document.getElementById(id).textContent;
@@ -101,16 +129,29 @@
                 document.getElementById("mem-text").textContent = `${memUsed}%`;
             });
 
-        fetch("/alarm-log")
+        fetch("/info-log")
             .then(res => res.json())
-            .then(logs => {
-                const ul = document.getElementById("logs");
-                logs.forEach(log => {
+            .then(infologs => {
+                const ul = document.getElementById("info");
+                infologs.forEach(log => {
                     const li = document.createElement("li");
                     li.textContent = `[${log.time}] ${JSON.stringify(log.data)}`;
                     ul.appendChild(li);
                 });
             });
+        // 接收信息卡片
+        fetch("/alarm-log")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("alert_alarm").textContent = data.alarmType;
+                document.getElementById("targetType").textContent = data.targetType;
+                document.getElementById("areaIds").textContent = data.areaIds;
+                document.getElementById("Time").textContent = data.time;
+                document.getElementById("alarm-img").src = data.img;
+
+            });
+
+
 
         fetch("/system-info")
             .then(res => {
@@ -125,32 +166,7 @@
             })
             .catch(err => {
                 console.error("请求失败", err);
-            });/*
-        function loadAlarmLogs() {
-            fetch("/alarm-log")
-                .then(res => {
-                    if (res.status === 401) {
-                        window.location.href = "/login.html";
-                        return;
-                    }
-                    return res.json();
-                })
-                .then(logs => {
-                    const ul = document.getElementById("logs");
-                    ul.innerHTML = ""; // 清空旧内容
-                    logs.forEach(log => {
-                        const li = document.createElement("li");
-                        li.textContent = `[${log.time}] ${log.data}`;
-                        ul.appendChild(li);
-                    });
-                });
-        }
-
-        // 初次加载
-        loadAlarmLogs();
-
-        // 每隔 5 秒自动刷新
-        setInterval(loadAlarmLogs, 5000);*/
+            })
 
     </script>
 </body>

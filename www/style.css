@@ -135,13 +135,6 @@ ul li {
     gap: 30px;
 }
 
-.card {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
-}
 
 .card h2 {
     margin-top: 0;
@@ -154,10 +147,12 @@ ul li {
 .log-card {
     margin-top: 30px;
     height: 100%;
-
 }
 
-
+.alarm-card {
+    margin-top: 30px;
+    height: 100%;
+}
 
 .copy-btn {
     background: #0078d4;

@@ -21,16 +21,12 @@ const alarmlogs ={
   img: [],
   data: [],
 }
-
 function startAlarmService(config) {
   const alarmApp = express();
   alarmApp.use(cookieParser());
 
   alarmApp.post(config.path, upload.any(), (req, res) => {
     let alarmData;
-        infologs.unshift({ time: new Date().toLocaleString(), data: "" });
-
-    if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
     try {
       alarmData = JSON.parse(req.body.alarm_info);
@@ -47,10 +43,8 @@ function startAlarmService(config) {
 
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
-
-    const imgfile = req.files[0];
-    console.log(imgfile);
-
+    alarmlogs.img=req.files[0].buffer;//图片
+    alarmlogs.data=alarmData;//数据
   });
 
   if (alarmServer) {
@@ -81,12 +75,10 @@ webApp.use(session({
 
 function requireAuth(req, res, next) {
   if (req.session?.authenticated) return next();
-
   // 对 HTML 页面请求，重定向
   if (req.originalUrl.endsWith(".html")) {
     return res.redirect("/login.html");
   }
-
   // 对 API 请求，返回 JSON
   res.status(401).json({ error: "未登录或会话已过期" });
 }
@@ -110,7 +102,6 @@ webApp.post("/login", (req, res) => {
     res.send("登录失败，请检查用户名和密码");
     infologs.unshift({ time: new Date().toLocaleString(), data: "登录失败" });
     if (infologs.length > 20) infologs.pop();
-
   }
 });
 
@@ -167,8 +158,12 @@ webApp.get("/system-info", requireAuth, (req, res) => {
   });
 });
 
-webApp.get("/alarm-log", requireAuth, (req, res) => {
+webApp.get("/info-log", requireAuth, (req, res) => {
   res.json(infologs);
+});
+
+webApp.get("/alarm-log", requireAuth, (req, res) => {
+  res.json(alarmlogs);
 });
 
 webApp.listen(80, () => {
