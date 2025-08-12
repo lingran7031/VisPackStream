@@ -14,7 +14,13 @@ const { getConfig, updateConfig } = require("./lib/config");
 
 const upload = multer();
 let alarmServer = null;
-const alarmLogs = [];
+const infologs = [];
+const serverlogs = [];
+const clientlogs = [];
+const alarmlogs ={
+  img: [],
+  data: [],
+}
 
 function startAlarmService(config) {
   const alarmApp = express();
@@ -22,32 +28,40 @@ function startAlarmService(config) {
 
   alarmApp.post(config.path, upload.any(), (req, res) => {
     let alarmData;
+        infologs.unshift({ time: new Date().toLocaleString(), data: "" });
+
+    if (infologs.length > 20) infologs.pop();
+    res.status(200).send("success");
     try {
       alarmData = JSON.parse(req.body.alarm_info);
     } catch (err) {
-      alarmLogs.unshift({ time: new Date().toLocaleString(), data: "JSON 解析失败" });
-      if (alarmLogs.length > 20) alarmLogs.pop();
+      infologs.unshift({ time: new Date().toLocaleString(), data: "JSON 解析失败" });
+      if (infologs.length > 20) infologs.pop();
       return res.status(400).send("Invalid JSON");
     }
-
     const alarmInfo = dispatchAlarm(alarmData);
-    pushAlarmData(alarmInfo);
+    infologs.data.unshift({ time: new Date().toLocaleString(), data: "收到来自Http Client的推送" });
+    if (infologs.data.length > 20) infologs.data.pop();
+    const response = pushAlarmData(alarmInfo);
+    infologs.unshift({ time: new Date().toLocaleString(), data: response });
 
-    alarmLogs.unshift({ time: new Date().toLocaleString(), data: alarmInfo });
-    if (alarmLogs.length > 20) alarmLogs.pop();
+    if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
+
+    const imgfile = req.files[0];
+    console.log(imgfile);
+
   });
 
   if (alarmServer) {
-    alarmServer.close(() => alarmLogs.unshift({ time: new Date().toLocaleString(), data: "旧报警服务已关闭" }));
-    if (alarmLogs.length > 20) alarmLogs.pop();
-
+    infologs.unshift({ time: new Date().toLocaleString(), data: `HTTP Server服务已重启: http://localhost:${config.port}${config.path}` });
+    if (infologs.length > 20) infologs.pop();
   }
 
   alarmServer = http.createServer(alarmApp);
   alarmServer.listen(config.port, () => {
-    alarmLogs.unshift({ time: new Date().toLocaleString(), data: `报警服务启动: http://localhost:${config.port}${config.path}` });
-    if (alarmLogs.length > 20) alarmLogs.pop();
+    infologs.unshift({ time: new Date().toLocaleString(), data: `HTTP Server服务启动: http://localhost:${config.port}${config.path}` });
+    if (infologs.length > 20) infologs.pop();
   });
 }
 
@@ -90,12 +104,12 @@ webApp.post("/login", (req, res) => {
     req.session.username = username;
     if (remember) req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000;
     res.redirect("/index.html");
-    alarmLogs.unshift({ time: new Date().toLocaleString(), data: "登录成功" });
-    if (alarmLogs.length > 20) alarmLogs.pop();
+    infologs.unshift({ time: new Date().toLocaleString(), data: "登录成功" });
+    if (infologs.length > 20) infologs.pop();
   } else {
     res.send("登录失败，请检查用户名和密码");
-    alarmLogs.unshift({ time: new Date().toLocaleString(), data: "登录失败" });
-    if (alarmLogs.length > 20) alarmLogs.pop();
+    infologs.unshift({ time: new Date().toLocaleString(), data: "登录失败" });
+    if (infologs.length > 20) infologs.pop();
 
   }
 });
@@ -123,8 +137,8 @@ webApp.post("/update-config-restart", requireAuth, (req, res) => {
   const newConfig = { port: parseInt(port), path, targetUrl };
   updateConfig(newConfig);
   res.status(200).send("ok");
-  alarmLogs.unshift({ time: new Date().toLocaleString(), data: "配置已更新，正在热重载报警服务..." });
-  if (alarmLogs.length > 20) alarmLogs.pop();
+  infologs.unshift({ time: new Date().toLocaleString(), data: "配置已更新，正在热重载报警服务..." });
+  if (infologs.length > 20) infologs.pop();
   startAlarmService(newConfig);
 });
 
@@ -154,13 +168,13 @@ webApp.get("/system-info", requireAuth, (req, res) => {
 });
 
 webApp.get("/alarm-log", requireAuth, (req, res) => {
-  res.json(alarmLogs);
+  res.json(infologs);
 });
 
 webApp.listen(80, () => {
   console.info("网页控制台已启动: http://localhost/index.html");
-  alarmLogs.unshift({ time: new Date().toLocaleString(), data: "网页控制台已启动" });
-  if (alarmLogs.length > 20) alarmLogs.pop();
+  infologs.unshift({ time: new Date().toLocaleString(), data: "网页控制台已启动" });
+  if (infologs.length > 20) infologs.pop();
 });
 
 function getLocalIP() {

@@ -68,7 +68,7 @@
 
         <!-- 报警日志卡片 -->
         <div class="card log-card">
-            <h2>最近报警日志</h2>
+            <h2>系统日志</h2>
             <ul id="logs"></ul>
         </div>
     </div>
@@ -125,7 +125,7 @@
             })
             .catch(err => {
                 console.error("请求失败", err);
-            });
+            });/*
         function loadAlarmLogs() {
             fetch("/alarm-log")
                 .then(res => {
@@ -140,7 +140,7 @@
                     ul.innerHTML = ""; // 清空旧内容
                     logs.forEach(log => {
                         const li = document.createElement("li");
-                        li.textContent = `[${log.time}] ${JSON.stringify(log.data)}`;
+                        li.textContent = `[${log.time}] ${log.data}`;
                         ul.appendChild(li);
                     });
                 });
@@ -150,8 +150,7 @@
         loadAlarmLogs();
 
         // 每隔 5 秒自动刷新
-        setInterval(loadAlarmLogs, 5000);
-
+        setInterval(loadAlarmLogs, 5000);*/
 
     </script>
 </body>

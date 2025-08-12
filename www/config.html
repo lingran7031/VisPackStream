@@ -18,27 +18,36 @@
         </div>
     </div>
     <div class="container">
-        <h2>配置参数</h2>
         <form id="config-form">
-            <label>监听端口:
-                <input type="number" name="port" required />
-            </label>
-            <label>监听路径:
-                <input type="text" name="path" required />
-            </label>
-            <label>推送地址:
-                <input type="text" name="targetUrl" required />
-            </label>
-            <label>孪生体ID:
-                <input type="text" name="twinID" required />
-            </label>
-            <label>用户名:
-                <input type="text" name="username" required />
-            </label>
-            <label>密码:
-                <input type="text" name="password" required />
-            </label>
-            <button type="submit">保存并重启服务</button>
+            <div class="card">
+                <h2>HttpServer</h2>
+                <label>监听端口:
+                    <input type="number" name="port" required />
+                </label>
+                <label>监听路径:
+                    <input type="text" name="path" required />
+                </label>
+            </div>
+            <div class="card">
+                <h2>HttpClient</h2>
+                <label>推送地址:
+                    <input type="text" name="targetUrl" required />
+                </label>
+                <label>孪生体ID:
+                    <input type="text" name="twinID" required />
+                </label>
+
+            </div>
+            <div class="card">
+                <h2>用户管理</h2>
+                <label>用户名:
+                    <input type="text" name="username" required />
+                </label>
+                <label>密码:
+                    <input type="password" name="password" required />
+                </label>
+                <button type="submit">设置</button>
+            </div>
         </form>
         <div id="status"></div>
     </div>
@@ -67,6 +76,7 @@
                 .then(res => res.text())
                 .then(msg => {
                     document.getElementById("status").textContent = "✅ 配置已更新并重启服务";
+
                 });
         });
     </script>
