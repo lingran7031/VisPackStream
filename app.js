@@ -26,7 +26,6 @@ function startAlarmService(config) {
   alarmApp.post(config.path, upload.any(), (req, res) => {
     console.log("收到来自Http Client的推送");
     let alarmData;
-    res.status(200).send("success");
     try {
       alarmData = JSON.parse(req.body.alarm_info);
     } catch (err) {
