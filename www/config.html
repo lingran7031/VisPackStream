@@ -29,6 +29,15 @@
             <label>推送地址:
                 <input type="text" name="targetUrl" required />
             </label>
+            <label>孪生体ID:
+                <input type="text" name="twinID" required />
+            </label>
+            <label>用户名:
+                <input type="text" name="username" required />
+            </label>
+            <label>密码:
+                <input type="text" name="password" required />
+            </label>
             <button type="submit">保存并重启服务</button>
         </form>
         <div id="status"></div>
@@ -42,6 +51,10 @@
                 form.port.value = config.port;
                 form.path.value = config.path;
                 form.targetUrl.value = config.targetUrl;
+                form.twinID.value = config.twinID;
+                form.username.value = config.username;
+                form.password.value = config.password;
+
             });
 
         document.getElementById("config-form").addEventListener("submit", e => {

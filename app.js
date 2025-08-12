@@ -25,7 +25,8 @@ function startAlarmService(config) {
     try {
       alarmData = JSON.parse(req.body.alarm_info);
     } catch (err) {
-      console.error("JSON 解析失败:", err);
+      alarmLogs.unshift({ time: new Date().toLocaleString(), data: "JSON 解析失败" });
+      if (alarmLogs.length > 20) alarmLogs.pop();
       return res.status(400).send("Invalid JSON");
     }
 
@@ -34,17 +35,19 @@ function startAlarmService(config) {
 
     alarmLogs.unshift({ time: new Date().toLocaleString(), data: alarmInfo });
     if (alarmLogs.length > 20) alarmLogs.pop();
-
     res.status(200).send("success");
   });
 
   if (alarmServer) {
-    alarmServer.close(() => console.info("🔄 旧报警服务已关闭"));
+    alarmServer.close(() => alarmLogs.unshift({ time: new Date().toLocaleString(), data: "旧报警服务已关闭" }));
+    if (alarmLogs.length > 20) alarmLogs.pop();
+
   }
 
   alarmServer = http.createServer(alarmApp);
   alarmServer.listen(config.port, () => {
-    console.info(`报警服务启动: http://localhost:${config.port}${config.path}`);
+    alarmLogs.unshift({ time: new Date().toLocaleString(), data: `报警服务启动: http://localhost:${config.port}${config.path}` });
+    if (alarmLogs.length > 20) alarmLogs.pop();
   });
 }
 
@@ -72,6 +75,8 @@ function requireAuth(req, res, next) {
 
   // 对 API 请求，返回 JSON
   res.status(401).json({ error: "未登录或会话已过期" });
+  alarmLogs.unshift({ time: new Date().toLocaleString(), data: "未登录或会话已过期" });
+  if (alarmLogs.length > 20) alarmLogs.pop();
 }
 
 
@@ -87,9 +92,13 @@ webApp.post("/login", (req, res) => {
     req.session.username = username;
     if (remember) req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000;
     res.redirect("/index.html");
-
+    alarmLogs.unshift({ time: new Date().toLocaleString(), data: "登录成功" });
+    if (alarmLogs.length > 20) alarmLogs.pop();
   } else {
     res.send("登录失败，请检查用户名和密码");
+    alarmLogs.unshift({ time: new Date().toLocaleString(), data: "登录失败" });
+    if (alarmLogs.length > 20) alarmLogs.pop();
+
   }
 });
 
@@ -116,7 +125,8 @@ webApp.post("/update-config-restart", requireAuth, (req, res) => {
   const newConfig = { port: parseInt(port), path, targetUrl };
   updateConfig(newConfig);
   res.status(200).send("ok");
-  console.info("🌀 配置已更新，正在热重载报警服务...");
+  alarmLogs.unshift({ time: new Date().toLocaleString(), data: "配置已更新，正在热重载报警服务..." });
+  if (alarmLogs.length > 20) alarmLogs.pop();
   startAlarmService(newConfig);
 });
 
@@ -151,6 +161,8 @@ webApp.get("/alarm-log", requireAuth, (req, res) => {
 
 webApp.listen(80, () => {
   console.info("网页控制台已启动: http://localhost/index.html");
+  alarmLogs.unshift({ time: new Date().toLocaleString(), data: "网页控制台已启动" });
+  if (alarmLogs.length > 20) alarmLogs.pop();
 });
 
 function getLocalIP() {
