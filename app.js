@@ -46,7 +46,6 @@ function startAlarmService(config) {
     const img = req.files && req.files[0]
   ? `data:${req.files[0].mimetype};base64,${req.files[0].buffer.toString("base64")}`
   : './nopig.png';
-  
     alarmlogs.img = img;
     alarmlogs.data = alarmData; // 数据
   });

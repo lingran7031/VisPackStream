@@ -149,6 +149,7 @@
                     document.getElementById("Time").textContent = data.data?.time || "无";
                     // 加载图片
                     document.getElementById("alarm-img").src = data.img
+                    console.log("图片数据:", data.img);
                 })
                 .catch(err => {
                     console.error("获取告警数据失败", err);
