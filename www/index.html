@@ -95,7 +95,7 @@
         </div>
 
         <!-- 系统日志卡片 -->
-        <div class="card log-card info">
+        <div class="card log-card">
             <h2>系统日志</h2>
             <ul id="infologs"></ul>
         </div>
@@ -131,7 +131,7 @@
         fetch("/info-log")
             .then(res => res.json())
             .then(infologs => {
-                const ul = document.getElementById("info");
+                const ul = document.getElementById("infologs");
                 infologs.forEach(log => {
                     const li = document.createElement("li");
                     li.textContent = `[${log.time}] ${JSON.stringify(log.data)}`;

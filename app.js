@@ -36,16 +36,15 @@ function startAlarmService(config) {
       return res.status(400).send("Invalid JSON");
     }
     const alarmInfo = dispatchAlarm(alarmData);
-    infologs.data.unshift({ time: new Date().toLocaleString(), data: "收到来自Http Client的推送" });
-    if (infologs.data.length > 20) infologs.data.pop();
+    infologs.unshift({ time: new Date().toLocaleString(), data: "收到来自Http Client的推送" });
+    if (infologs.length > 20) infologs.pop();
     const response = pushAlarmData(alarmInfo);
     infologs.unshift({ time: new Date().toLocaleString(), data: response });
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
-    /*
     alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
     alarmlogs.data=alarmData;//数据
-    */
+
   });
 
   if (alarmServer) {
