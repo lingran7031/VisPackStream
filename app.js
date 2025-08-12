@@ -16,7 +16,7 @@ const upload = multer();
 let alarmServer = null;
 const infologs = [];
 const alarmlogs ={
-  img: [],
+  img: './nopig.png',
   data: [],
 }
 function startAlarmService(config) {
@@ -24,11 +24,13 @@ function startAlarmService(config) {
   alarmApp.use(cookieParser());
 
   alarmApp.post(config.path, upload.any(), (req, res) => {
+    console.log("收到来自Http Client的推送");
     let alarmData;
     res.status(200).send("success");
     try {
       alarmData = JSON.parse(req.body.alarm_info);
     } catch (err) {
+      console.log("JSON 解析失败");
       infologs.unshift({ time: new Date().toLocaleString(), data: "JSON 解析失败" });
       if (infologs.length > 20) infologs.pop();
       return res.status(400).send("Invalid JSON");
@@ -41,17 +43,19 @@ function startAlarmService(config) {
 
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
-    alarmlogs.img=req.files[0].buffer;//图片
+    alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
     alarmlogs.data=alarmData;//数据
   });
 
   if (alarmServer) {
+    console.log("HTTP Server服务已重启");
     infologs.unshift({ time: new Date().toLocaleString(), data: `HTTP Server服务已重启: http://localhost:${config.port}${config.path}` });
     if (infologs.length > 20) infologs.pop();
   }
 
   alarmServer = http.createServer(alarmApp);
   alarmServer.listen(config.port, () => {
+    console.log("HTTP Server服务启动");
     infologs.unshift({ time: new Date().toLocaleString(), data: `HTTP Server服务启动: http://localhost:${config.port}${config.path}` });
     if (infologs.length > 20) infologs.pop();
   });

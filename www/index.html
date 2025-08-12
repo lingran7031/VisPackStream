@@ -45,7 +45,7 @@
             <div class="card">
                 <h2>系统占用</h2>
                 <div class="chart-container">
-                    <div class="chart">
+                    <div class="chart"> 
                         <svg width="120" height="120">
                             <circle class="bg" cx="60" cy="60" r="50" />
                             <circle class="value" id="cpu-circle" cx="60" cy="60" r="50" stroke-dasharray="0 314" />
@@ -66,11 +66,11 @@
         </div>
 
         <!-- 接收信息卡片 -->
-        <div class="card alarm-card alert">
-            <h2>接收信息</h2>
+        <div class="alarm-card alert">
+            <h2>推送信息</h2>
             <div class="grid">
                 <div>
-                    <img id="alarm-img" alt="抓拍图片" rcs=# width="65%" height="65%">
+                    <img id="alarm-img" alt="抓拍图片" src="./nopig.png"  height="50%">
 
                 </div>
                 <div>
@@ -146,7 +146,8 @@
                 document.getElementById("targetType").textContent = data.targetType;
                 document.getElementById("areaIds").textContent = data.areaIds;
                 document.getElementById("Time").textContent = data.time;
-                document.getElementById("alarm-img").src = data.img;
+                document.getElementById("alarm-img").src = data.img ?? "./nopig.png";
+
             });
 
 
