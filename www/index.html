@@ -45,7 +45,7 @@
             <div class="card">
                 <h2>系统占用</h2>
                 <div class="chart-container">
-                    <div class="chart"> 
+                    <div class="chart">
                         <svg width="120" height="120">
                             <circle class="bg" cx="60" cy="60" r="50" />
                             <circle class="value" id="cpu-circle" cx="60" cy="60" r="50" stroke-dasharray="0 314" />
@@ -70,7 +70,9 @@
             <h2>推送信息</h2>
             <div class="grid">
                 <div>
-                    <img id="alarm-img" alt="抓拍图片" src="./nopig.png"  height="50%" width="50%">
+                    <img id="alarm-img" alt="抓拍图片" src="./nopig.png" height="150px" width="200px">
+
+
                 </div>
                 <div>
                     <div class="info-row">
@@ -138,6 +140,7 @@
                 });
             });
         // 接收信息卡片
+        function fetchAlarmData() {
             fetch("/alarm-log")
                 .then(res => res.json())
                 .then(data => {
@@ -147,12 +150,17 @@
                     document.getElementById("areaIds").textContent = data.data?.areaIds || "无";
                     document.getElementById("Time").textContent = data.data?.time || "无";
                     // 加载图片
-                    document.getElementById("alarm-img").src = data.img
-                    console.log("图片数据:", data.img);
+                    document.getElementById("alarm-img").src = data.data?.img || "./nopig.png";
                 })
                 .catch(err => {
                     console.error("获取告警数据失败", err);
                 });
+        }
+
+        // 初始加载
+        fetchAlarmData();
+        // 设置定时器，每5秒刷新一次数据
+        setInterval(fetchAlarmData, 5000);
 
         fetch("/system-info")
             .then(res => {
