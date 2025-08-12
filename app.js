@@ -17,7 +17,8 @@ let alarmServer = null;
 const infologs = [];
 const alarmlogs ={
   img: '',
-  data: [],
+  data: {},
+
 }
 function startAlarmService(config) {
   const alarmApp = express();
@@ -41,8 +42,10 @@ function startAlarmService(config) {
     infologs.unshift({ time: new Date().toLocaleString(), data: response });
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
-    alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
-    alarmlogs.data=alarmData;//数据
+    console.log(req.files)
+
+    //alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
+    //alarmlogs.data=alarmData;//数据
 
   });
 
