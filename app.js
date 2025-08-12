@@ -15,7 +15,7 @@ const { getConfig, updateConfig } = require("./lib/config");
 const upload = multer();
 let alarmServer = null;
 const infologs = [];
-const alarmlogs ={
+const alarmlogs = {
   img: '',
   data: {},
 
@@ -42,10 +42,10 @@ function startAlarmService(config) {
     infologs.unshift({ time: new Date().toLocaleString(), data: response });
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
-    const img =`data:${req.files[0].mimetype};base64,${req.files[0].buffer}`?? './nopig.png';//图片
-    alarmlogs.img=img
-    alarmlogs.data=alarmData;//数据
-
+    // 修复图片处理逻辑，确保在没有文件时不会出错
+    const img = req.files && req.files[0] ? `data:${req.files[0].mimetype};base64,${req.files[0].buffer}` : './nopig.png';
+    alarmlogs.img = img;
+    alarmlogs.data = alarmData; // 数据
   });
 
   if (alarmServer) {

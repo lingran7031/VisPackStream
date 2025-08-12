@@ -139,15 +139,28 @@
                 });
             });
         // 接收信息卡片
-        fetch("/alarm-log")
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("alert_alarm").textContent = data.alarmType;
-                document.getElementById("targetType").textContent = data.targetType;
-                document.getElementById("areaIds").textContent = data.areaIds;
-                document.getElementById("Time").textContent = data.time;
-                document.getElementById("alarm-img").src = data.img ?? "./nopig.png";
-            });
+                function fetchAlarmData() {
+            fetch("/alarm-log")
+                .then(res => res.json())
+                .then(data => {
+                    // 从data.data中获取告警信息
+                    document.getElementById("alert_alarm").textContent = data.data?.alarmType || "无";
+                    document.getElementById("targetType").textContent = data.data?.targetType || "无";
+                    document.getElementById("areaIds").textContent = data.data?.areaIds || "无";
+                    document.getElementById("Time").textContent = data.data?.time || "无";
+                    // 加载图片
+                    document.getElementById("alarm-img").src = data.img || "./nopig.png";
+                })
+                .catch(err => {
+                    console.error("获取告警数据失败", err);
+                });
+        }
+
+        // 初始加载
+        fetchAlarmData();
+        // 设置定时器，每5秒刷新一次数据
+        setInterval(fetchAlarmData, 5000);
+
 
         fetch("/system-info")
             .then(res => {
