@@ -16,7 +16,7 @@ const upload = multer();
 let alarmServer = null;
 const infologs = [];
 const alarmlogs ={
-  img: './nopig.png',
+  img: '',
   data: [],
 }
 function startAlarmService(config) {
@@ -40,11 +40,12 @@ function startAlarmService(config) {
     if (infologs.data.length > 20) infologs.data.pop();
     const response = pushAlarmData(alarmInfo);
     infologs.unshift({ time: new Date().toLocaleString(), data: response });
-
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
+    /*
     alarmlogs.img=req.files[0].buffer ?? './nopig.png';//图片
     alarmlogs.data=alarmData;//数据
+    */
   });
 
   if (alarmServer) {
@@ -163,11 +164,11 @@ webApp.get("/system-info", requireAuth, (req, res) => {
 webApp.get("/info-log", requireAuth, (req, res) => {
   res.json(infologs);
 });
-
+/*
 webApp.get("/alarm-log", requireAuth, (req, res) => {
   res.json(alarmlogs);
 });
-
+*/
 webApp.listen(80, () => {
   console.info("网页控制台已启动: http://localhost/index.html");
   infologs.unshift({ time: new Date().toLocaleString(), data: "网页控制台已启动" });

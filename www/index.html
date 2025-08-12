@@ -147,10 +147,7 @@
                 document.getElementById("areaIds").textContent = data.areaIds;
                 document.getElementById("Time").textContent = data.time;
                 document.getElementById("alarm-img").src = data.img ?? "./nopig.png";
-
             });
-
-
 
         fetch("/system-info")
             .then(res => {
@@ -166,7 +163,6 @@
             .catch(err => {
                 console.error("请求失败", err);
             })
-
     </script>
 </body>
 
