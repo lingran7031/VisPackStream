@@ -15,8 +15,6 @@ const { getConfig, updateConfig } = require("./lib/config");
 const upload = multer();
 let alarmServer = null;
 const infologs = [];
-const serverlogs = [];
-const clientlogs = [];
 const alarmlogs ={
   img: [],
   data: [],
