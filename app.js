@@ -16,7 +16,7 @@ const upload = multer();
 let alarmServer = null;
 const infologs = [];
 const alarmlogs = {
-  img: '',
+  img: './nopig.png',
   data: {},
 
 }
