@@ -48,7 +48,6 @@ function startAlarmService(config) {
       : './nopig.png';
     alarmlogs.img = img;
     alarmlogs.data = alarmData; // 数据
-    console.log(alarmlogs);
 
   });
 
