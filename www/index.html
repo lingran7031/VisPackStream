@@ -177,7 +177,7 @@
                     document.getElementById("areaIds").textContent = data.data?.areaIds || "无";
                     document.getElementById("Time").textContent = data.data?.time || "无";
                     // 加载图片
-                    document.getElementById("alarm-img").src = data.data.img
+                    document.getElementById("alarm-img").src = data.img
                 })
                 .catch(err => {
                     console.error("获取告警数据失败", err);
