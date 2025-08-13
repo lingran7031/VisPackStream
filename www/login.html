@@ -2,84 +2,227 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <title>登录 - 报警系统</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebUI登录-VisPackStream</title>
   <style>
+    /* 全局样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f0f2f5;
+      background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      overflow: hidden;
     }
 
-    .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+    /* 登录框容器 */
+    .login-container {
+      position: relative;
       width: 100%;
-      max-width: 320px;
-      box-sizing: border-box;
+      max-width: 380px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
     }
 
-    .login-box h2 {
+    .login-container:hover {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      transform: translateY(-5px);
+    }
+
+    /* 卡通图标 */
+    .icon-container {
       text-align: center;
-      margin-bottom: 24px;
-      color: #333;
+      margin-bottom: 30px;
+      position: relative;
     }
 
-    .login-box input[type="text"],
-    .login-box input[type="password"],
-    .login-box button {
+    .icon-container img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 标题 */
+    h2 {
+      text-align: center;
+      color: #1976d2;
+      font-size: 28px;
+      margin-bottom: 25px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* 输入框样式 */
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 16px;
-      border-radius: 4px;
+      padding: 12px 20px;
+      padding-left: 45px;
+      border: 2px solid #f0f0f0;
+      border-radius: 30px;
       font-size: 15px;
-      box-sizing: border-box;
+      color: #333;
+      transition: all 0.3s ease;
+      background: #f9f9f9;
     }
 
-    .login-box input[type="text"],
-    .login-box input[type="password"] {
-      border: 1px solid #ccc;
+    .input-group input:focus {
+      border-color: #1976d2;
+      outline: none;
+      background: #fff;
+      box-shadow: 0 0 0 5px rgba(25, 118, 210, 0.1);
     }
 
-    .login-box button {
-      background: #0078d4;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
+    .input-group .icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 16px;
     }
 
-    .login-box button:hover {
-      background: #005fa3;
+    /* 记住我 */
+    .remember-forgot {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 25px;
     }
 
-    .login-box label {
-      font-size: 14px;
+    .remember-forgot label {
       display: flex;
       align-items: center;
-      margin-bottom: 16px;
-      color: #555;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
     }
 
-    .login-box input[type="checkbox"] {
-      margin-right: 6px;
+    .remember-forgot input {
+      margin-right: 8px;
+      accent-color: #1976d2;
+    }
+
+    /* 登录按钮 */
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #1976d2, #64b5f6);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(45deg, #1565c0, #1976d2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(25, 118, 210, 0.3);
+    }
+
+    /* 装饰元素 */
+    .decorative-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      z-index: -1;
+    }
+
+    .circle-1 {
+      width: 300px;
+      height: 300px;
+      top: -150px;
+      right: -100px;
+    }
+
+    .circle-2 {
+      width: 200px;
+      height: 200px;
+      bottom: -100px;
+      left: -50px;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+        margin: 0 20px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
     }
   </style>
+  <!-- 引入Font Awesome图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-  <form class="login-box" method="POST" action="/login">
-    <h2>VisPackStream Login</h2>
+  <!-- 装饰圆圈 -->
+  <div class="decorative-circle circle-1"></div>
+  <div class="decorative-circle circle-2"></div>
 
-    <input type="text" name="username" placeholder="用户名" required />
-    <input type="password" name="password" placeholder="密码" required />
-    <label><input type="checkbox" name="remember" /> 记住我</label>
-    <button type="submit">登录</button>
-  </form>
+  <!-- 登录容器 -->
+  <div class="login-container">
+    <!-- 图标容器 -->
+    <div class="icon-container">
+      <img src="nopig.png" alt="Login Icon" />
+    </div>
+
+    <!-- 标题 -->
+    <h2>Web Login</h2>
+
+    <!-- 登录表单 -->
+    <form method="POST" action="/login">
+      <!-- 用户名输入 -->
+      <div class="input-group">
+        <span class="icon"><i class="fas fa-user"></i></span>
+        <input type="text" name="username" placeholder="请输入用户名" required />
+      </div>
+
+      <!-- 密码输入 -->
+      <div class="input-group">
+        <span class="icon"><i class="fas fa-lock"></i></span>
+        <input type="password" name="password" placeholder="请输入密码" required />
+      </div>
+
+      <!-- 记住我 -->
+      <div class="remember-forgot">
+        <label><input type="checkbox" name="remember" /> 记住我</label>
+      </div>
+
+      <!-- 登录按钮 -->
+      <button type="submit" class="btn-login">
+        <i class="fas fa-sign-in-alt"></i> 登录
+      </button>
+    </form>
+  </div>
 </body>
 </html>

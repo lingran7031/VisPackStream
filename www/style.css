@@ -1,218 +1,314 @@
-body {
-    font-family: "Segoe UI", sans-serif;
-    background: #f0f2f5;
+/* 全局样式 */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.navbar {
-    background: #0078d4;
-    color: white;
-    padding: 14px 32px;
+body {
+    background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    flex-direction: row;
 }
 
-.navbar div:first-child {
+/* 侧边导航栏样式 */
+.navbar {
+    background: white;
+    color: #1976d2;
+    width: 240px;
+    height: 100vh;
+    padding: 20px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.navbar a {
-    color: white;
+.logo i {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.nav-links a {
+    color: #1976d2;
     text-decoration: none;
-    margin-left: 24px;
+    padding: 12px 20px;
     font-weight: 500;
     font-size: 16px;
-    transition: color 0.2s ease;
-}
-
-.navbar a:hover {
-    color: #cce6ff;
-    text-decoration: underline;
-}
-
-.navbar a.active {
-    border-bottom: 2px solid white;
-    padding-bottom: 2px;
-}
-
-
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: rgba(233, 233, 232, 0.775);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-h2 {
-    margin-top: 0;
-    color: #333;
-}
-
-form label {
-    display: block;
-    margin-bottom: 15px;
-    font-weight: 500;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-button {
-    background: #0078d4;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-button:hover {
-    background: #005fa3;
-}
-
-#status {
-    margin-top: 20px;
-    color: green;
-    font-weight: bold;
-}
-
-ul {
-    padding-left: 20px;
-}
-
-ul li {
-    margin-bottom: 8px;
-    font-family: monospace;
-    background: #f9f9f9;
-    padding: 6px 10px;
-    border-radius: 4px;
-}
-
-.card {
-    height: 85%;
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.progress-bar {
-    background: #e0e0e0;
-    border-radius: 6px;
-    overflow: hidden;
-    height: 16px;
-    margin-top: 6px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: #0078d4;
-    transition: width 0.3s ease;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
-
-
-
-.card h2 {
-    margin-top: 0;
-    color: #333;
-}
-.card p {
-    margin-bottom: 10px;
-}
-
-.log-card {
-    margin-top: 30px;
-    height: 100%;
-}
-
-.alarm-card {
-    margin-top: 30px;
-    height: 185px;
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.copy-btn {
-    background: #0078d4;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    margin-left: 10px;
-}
-
-.copy-btn:hover {
-    background: #005fa3;
-}
-
-.chart-container {
+    transition: all 0.3s ease;
     display: flex;
-    justify-content: space-around;
     align-items: center;
 }
 
-.chart {
-    width: 120px;
-    height: 120px;
+.nav-links a i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}
+
+.nav-links a:hover {
+    color: #0d47a1;
+    background-color: #e3f2fd;
+    transform: translateX(5px);
+}
+
+.nav-links a.active {
+    color: #0d47a1;
+    font-weight: 600;
+    background-color: #e3f2fd;
     position: relative;
+}
+
+.nav-links a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: #1976d2;
+    border-radius: 0 2px 2px 0;
+}
+
+/* 容器样式 */
+.container {
+    max-width: 1000px;
+    margin: 30px 30px 30px 270px; /* 增加左侧边距以适应侧边栏 */
+    padding: 0 20px;
+    width: calc(100% - 270px); /* 计算剩余宽度 */
+}
+
+/* 卡片样式 */
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: linear-gradient(45deg, #1976d2, #64b5f6);
+    color: white;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.card-header i {
+    margin-right: 10px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* 网格布局 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* 信息行样式 */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row strong {
+    color: #555;
+}
+
+.info-row span {
+    color: #333;
+}
+
+/* 复制按钮 */
+.copy-btn {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.copy-btn i {
+    margin-right: 5px;
+}
+
+.copy-btn:hover {
+    background: #bbdefb;
+    transform: translateY(-2px);
+}
+
+/* 图表容器 */
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .chart svg {
     transform: rotate(-90deg);
 }
 
-.chart circle {
+.chart .bg {
     fill: none;
+    stroke: #f0f0f0;
     stroke-width: 10;
 }
 
-.chart .bg {
-    stroke: #e0e0e0;
-}
-
 .chart .value {
-    stroke: #0078d4;
+    fill: none;
+    stroke: #1976d2;
+    stroke-width: 10;
     stroke-linecap: round;
-    transition: stroke-dasharray 0.5s ease;
+    transition: all 1s ease;
 }
 
 .chart-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    font-size: 18px;
     font-weight: bold;
-    font-size: 16px;
+    color: #1976d2;
+    margin-top: 60px;
+}
+
+/* 告警卡片 */
+.alarm-card .card-body {
+    padding: 0;
+}
+
+.alarm-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.alarm-image img {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.alarm-info {
+    padding: 20px;
+}
+
+/* 日志卡片 */
+.log-card .card-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#log-container {
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .navbar {
+        width: 60px;
+    }
+
+    .logo span, .nav-links a span {
+        display: none;
+    }
+
+    .logo i {
+        margin-right: 0;
+    }
+
+    .nav-links a i {
+        margin-right: 0;
+    }
+
+    .container {
+        margin-left: 90px;
+        width: calc(100% - 90px);
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        padding: 10px;
+    }
+
+    .logo {
+        padding: 0 10px;
+        border-bottom: none;
+    }
+
+    .nav-links {
+        flex-direction: row;
+        padding: 0;
+    }
+
+    .nav-links a {
+        padding: 10px;
+    }
+
+    .container {
+        margin-left: 30px;
+        width: calc(100% - 60px);
+    }
 }
 .info-row {
   display: flex;

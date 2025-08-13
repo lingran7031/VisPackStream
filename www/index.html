@@ -3,17 +3,22 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>系统主页</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
     <div class="navbar">
-        <div>VisPackStream</div>
-        <div>
-            <a href="index.html" class="active">首页</a>
-            <a href="config.html">配置</a>
-            <a href="/logout">退出</a>
+        <div class="logo">
+            <i class="fas fa-stream"></i> VisPackStream
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active"><i class="fas fa-home"></i> 基础信息</a>
+            <a href="config.html"><i class="fas fa-cog"></i> 系统配置</a>
+            <a href="login.html"><i class="fas fa-sign-out-alt"></i> 退出</a>
         </div>
     </div>
 
@@ -21,75 +26,91 @@
         <div class="grid">
             <!-- 系统信息卡片 -->
             <div class="card">
-                <h2>系统信息</h2>
-                <div class="info-row">
-                    <strong>设备 IP:</strong>
-                    <span id="ip">加载中...</span>
-                    <button class="copy-btn" onclick="copyText('ip')">复制</button>
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i> 系统信息
                 </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <strong>设备 IP:</strong>
+                        <span id="ip">加载中...</span>
+                        <button class="copy-btn" onclick="copyText('ip')">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
 
-                <div class="info-row">
-                    <strong>监听地址:</strong>
-                    <span id="listen">加载中...</span>
-                    <button class="copy-btn" onclick="copyText('listen')">复制</button>
+                    <div class="info-row">
+                        <strong>监听地址:</strong>
+                        <span id="listen">加载中...</span>
+                        <button class="copy-btn" onclick="copyText('listen')">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+
+                    <div class="info-row">
+                        <strong>推送地址:</strong>
+                        <span id="target">加载中...</span>
+                        <button class="copy-btn" onclick="copyText('target')">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
                 </div>
-
-                <div class="info-row">
-                    <strong>推送地址:</strong>
-                    <span id="target">加载中...</span>
-                    <button class="copy-btn" onclick="copyText('target')">复制</button>
-                </div>
-
             </div>
+
             <!-- 系统占用卡片 -->
             <div class="card">
-                <h2>系统占用</h2>
-                <div class="chart-container">
-                    <div class="chart">
-                        <svg width="120" height="120">
-                            <circle class="bg" cx="60" cy="60" r="50" />
-                            <circle class="value" id="cpu-circle" cx="60" cy="60" r="50" stroke-dasharray="0 314" />
-                        </svg>
-                        <div class="chart-text" id="cpu-text">--%</div>
-                        <p style="text-align:center;">CPU</p>
-                    </div>
-                    <div class="chart">
-                        <svg width="120" height="120">
-                            <circle class="bg" cx="60" cy="60" r="50" />
-                            <circle class="value" id="mem-circle" cx="60" cy="60" r="50" stroke-dasharray="0 314" />
-                        </svg>
-                        <div class="chart-text" id="mem-text">--%</div>
-                        <p style="text-align:center;">内存</p>
+                <div class="card-header">
+                    <i class="fas fa-microchip"></i> 系统占用
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <div class="chart">
+                            <svg width="120" height="120">
+                                <circle class="bg" cx="60" cy="60" r="50" />
+                                <circle class="value" id="cpu-circle" cx="60" cy="60" r="50" stroke-dasharray="0 314" />
+                            </svg>
+                            <div class="chart-text" id="cpu-text">--%</div>
+                            <p style="text-align:center;">CPU</p>
+                        </div>
+                        <div class="chart">
+                            <svg width="120" height="120">
+                                <circle class="bg" cx="60" cy="60" r="50" />
+                                <circle class="value" id="mem-circle" cx="60" cy="60" r="50" stroke-dasharray="0 314" />
+                            </svg>
+                            <div class="chart-text" id="mem-text">--%</div>
+                            <p style="text-align:center;">内存</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 接收信息卡片 -->
-        <div class="alarm-card alert">
-            <h2>推送信息</h2>
-            <div class="grid">
-                <div>
-                    <img id="alarm-img" alt="抓拍图片" src="./nopig.png" height="150px" width="200px">
-
-
-                </div>
-                <div>
-                    <div class="info-row">
-                        <strong>告警类型:</strong>
-                        <span id="alert_alarm">无</span>
+        <div class="card alarm-card">
+            <div class="card-header">
+                <i class="fas fa-bell"></i> 推送信息
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <div class="alarm-image">
+                        <img id="alarm-img" alt="抓拍图片" src="./nopig.png" height="150px" width="200px">
                     </div>
-                    <div class="info-row">
-                        <strong>目标类型:</strong>
-                        <span id="targetType">无</span>
-                    </div>
-                    <div class="info-row">
-                        <strong>区域ID:</strong>
-                        <span id="areaIds">无</span>
-                    </div>
-                    <div class="info-row">
-                        <strong>时间:</strong>
-                        <span id="Time">无</span>
+                    <div class="alarm-info">
+                        <div class="info-row">
+                            <strong>告警类型:</strong>
+                            <span id="alert_alarm">无</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>目标类型:</strong>
+                            <span id="targetType">无</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>区域ID:</strong>
+                            <span id="areaIds">无</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>时间:</strong>
+                            <span id="Time">无</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,19 +118,28 @@
 
         <!-- 系统日志卡片 -->
         <div class="card log-card">
-            <h2>系统日志</h2>
-            <ul id="infologs"></ul>
+            <div class="card-header">
+                <i class="fas fa-file-alt"></i> 系统日志
+            </div>
+            <div class="card-body">
+                <!-- 日志内容将通过JavaScript动态加载 -->
+                <div id="log-container"></div>
+            </div>
         </div>
     </div>
+
     <script>
-        function copyText(id) {
-            const text = document.getElementById(id).textContent;
+        // 这里可以添加JavaScript代码来动态加载系统信息、CPU/内存占用和日志
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
-                alert("已复制: " + text);
+                alert('已复制到剪贴板');
+            }).catch(err => {
+                console.error('复制失败:', err);
             });
         }
 
-        fetch("/system-info")
+                fetch("/system-info")
             .then(res => res.json())
             .then(data => {
                 document.getElementById("ip").textContent = data.ip;
@@ -132,7 +162,7 @@
         fetch("/info-log")
             .then(res => res.json())
             .then(infologs => {
-                const ul = document.getElementById("infologs");
+                const ul = document.getElementById("log-container");
                 infologs.forEach(log => {
                     const li = document.createElement("li");
                     li.textContent = `[${log.time}] ${JSON.stringify(log.data)}`;
