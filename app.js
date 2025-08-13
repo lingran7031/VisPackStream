@@ -43,9 +43,9 @@ function startAlarmService(config) {
     if (infologs.length > 20) infologs.pop();
     res.status(200).send("success");
     // 修复图片处理逻辑，确保在没有文件时不会出错
-    const img = /*req.files && req.files[0]
+    const img = req.files && req.files[0]
       ? `data:${req.files[0].mimetype};base64,${req.files[0].buffer.toString("base64")}`
-      : */'./nopig.png';
+      : './nopig.png';
     alarmlogs.img = img;
     alarmlogs.data = alarmData; // 数据
     console.log(alarmlogs);
