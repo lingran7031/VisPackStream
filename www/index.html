@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>系统主页</title>
+    <title>基础信息-VisPackStreamV</title>
     <link rel="stylesheet" href="style.css" />
     <!-- 引入Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -50,6 +50,12 @@
                         <strong>推送地址:</strong>
                         <span id="target">加载中...</span>
                     </div>
+
+                    <!-- 添加版本信息 -->
+                    <div class="info-row">
+                        <strong>系统版本:</strong>
+                        <span id="version">加载中...</span>
+                    </div>
                 </div>
             </div>
 
@@ -87,9 +93,9 @@
                 <i class="fas fa-bell"></i> 推送信息
             </div>
             <div class="card-body">
-                <div class="grid">
+                <div class="grid1">
                     <div class="alarm-image">
-                        <img id="alarm-img" alt="抓拍图片" src="./nopig.png" height="150px" width="200px">
+                        <img id="alarm-img" alt="抓拍图片" src="./nopig.png" height="200px" width="250px">
                     </div>
                     <div class="alarm-info">
                         <div class="info-row">
@@ -142,6 +148,9 @@
                 document.getElementById("ip").textContent = data.ip;
                 document.getElementById("listen").textContent = `http://${data.ip}:${data.port}${data.path}`;
                 document.getElementById("target").textContent = data.targetUrl;
+                // 显示版本信息
+                document.getElementById("version").textContent =  data.version || "未知版本";
+
 
                 // CPU 环图
                 const cpuPercent = parseFloat(data.cpu);

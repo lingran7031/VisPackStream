@@ -141,6 +141,15 @@ body {
     gap: 25px;
 }
 
+/* 网格布局 */
+.grid1 {
+    display: grid;/* 2列布局 */
+    grid-template-columns: 1fr 1fr;
+    /* 上下间距 */
+    gap: 20px;
+
+}
+
 /* 信息行样式 */
 .info-row {
     display: flex;

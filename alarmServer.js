@@ -59,7 +59,9 @@ function startAlarmService(config, infologs) {
       ? `data:${req.files[0].mimetype};base64,${req.files[0].buffer.toString('base64')}`
       : './nopig.png';
     module.exports.alarmlogs.img = img;
-    module.exports.alarmlogs.data = alarmData;
+    module.exports.alarmlogs.data = {
+        ...alarmInfo,
+    };
   });
 
   if (alarmServer) {

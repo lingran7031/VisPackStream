@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const pathModule = require('path');
 const os = require('os');
 const osUtils = require('os-utils');
-
+const packageInfo = require('./package.json'); // 添加这一行
 // 引入报警服务器模块
 const alarmServer = require('./alarmServer');
 const { getConfig, updateConfig } = require('./lib/config');
@@ -110,7 +110,8 @@ webApp.get('/system-info', requireAuth, (req, res) => {
         total: os.totalmem(),
         free: os.freemem()
       },
-      cpu: (cpu * 100).toFixed(2)
+      cpu: (cpu * 100).toFixed(2),
+      version: packageInfo.version // 添加这一行
     });
   });
 });
