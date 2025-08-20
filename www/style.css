@@ -100,7 +100,6 @@ body {
     padding: 0 20px;
     width: calc(100% - 270px); /* 计算剩余宽度 */
 }
-
 /* 卡片样式 */
 .card {
     background: white;
@@ -254,17 +253,84 @@ body {
     padding: 20px;
 }
 
-/* 日志卡片 */
+/* 日志卡片自适应优化 */
 .log-card .card-body {
-    max-height: 300px;
+    max-height: calc(100vh - 150px);
     overflow-y: auto;
 }
 
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .navbar {
+        width: 200px; 
+    }
+    .container,
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+}
 #log-container {
     font-family: monospace;
     font-size: 14px;
     line-height: 1.5;
     color: #333;
+    list-style-type: none;
+}
+
+/* 日志级别样式 */
+.log-debug {
+    color: #6c757d;
+}
+
+.log-info {
+    color: #0d6efd;
+}
+
+.log-warn {
+    color: #ffc107;
+    font-weight: 500;
+}
+
+.log-error {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.log-fatal {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 700;
+}
+
+/* 日志过滤器 */
+.log-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.log-filter button {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.log-filter button:hover {
+    background: #bbdefb;
+}
+
+.log-filter button.active {
+    background: #1976d2;
+    color: white;
 }
 
 /* 表单样式 */
@@ -423,4 +489,10 @@ body {
 .copy-btn {
   margin-left: 10px;
   flex-shrink: 0; /* 防止按钮被压缩 */
+}
+/* 主内容区样式 */
+.main-content {
+    width: 100%;
+    margin-left: 240px; /* 与侧边栏宽度一致 */
+    padding: 0;
 }

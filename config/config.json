@@ -4,5 +4,8 @@
   "password": "123456",
   "port": 3000,
   "path": "/alarm",
-  "targetUrl": "http://172.26.32.158:10063/http/rest"
+  "targetUrl": "http://172.26.32.158:10063/http/rest",
+  "timerEnabled": true,
+  "timerInterval": 60000,
+  "timerResponse": "报警超时"
 }

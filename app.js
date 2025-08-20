@@ -5,16 +5,15 @@ const bodyParser = require('body-parser');
 const pathModule = require('path');
 const os = require('os');
 const osUtils = require('os-utils');
-const packageInfo = require('./package.json'); // 添加这一行
-// 引入报警服务器模块
-const alarmServer = require('./alarmServer');
+const packageInfo = require('./package.json'); 
+// 引入HttpServer模块
+const HttpServer = require('./lib/HttpServer');
 const { getConfig, updateConfig } = require('./lib/config');
-
-// 全局日志数组
-const infologs = [];
+// 引入日志模块
+const logger = require('./lib/Logger');
 
 // 启动报警服务
-alarmServer.startAlarmService(getConfig(), infologs);
+HttpServer.startAlarmService(getConfig());
 
 // 创建Web应用
 const webApp = express();
@@ -53,12 +52,10 @@ webApp.post('/login', (req, res) => {
     req.session.username = username;
     if (remember) req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000;
     res.redirect('/index.html');
-    infologs.unshift({ time: new Date().toLocaleString(), data: '登录成功' });
-    if (infologs.length > 20) infologs.pop();
+    logger.info('登录成功', 'Auth');
   } else {
     res.send('登录失败，请检查用户名和密码');
-    infologs.unshift({ time: new Date().toLocaleString(), data: '登录失败' });
-    if (infologs.length > 20) infologs.pop();
+    logger.warn('登录失败', 'Auth');
   }
 });
 
@@ -70,24 +67,65 @@ webApp.get('/user-info', requireAuth, (req, res) => {
   res.json({ username: req.session.username });
 });
 
+// 获取报警日志
+webApp.get('/alarm-log', requireAuth, (req, res) => {
+  res.json(HttpServer.alarmlogs);
+});
+
+
+
 webApp.get('/get-config', requireAuth, (req, res) => {
   res.json(getConfig());
 });
 
+
+
 webApp.post('/update-config', requireAuth, (req, res) => {
-  const { port, path, targetUrl } = req.body;
-  updateConfig({ port: parseInt(port), path, targetUrl });
+  // 解析表单数据
+  const formData = req.body;
+  const newConfig = {};
+  
+  // 处理基本配置
+  if (formData.port) newConfig.port = parseInt(formData.port);
+  if (formData.path) newConfig.path = formData.path;
+  if (formData.targetUrl) newConfig.targetUrl = formData.targetUrl;
+  if (formData.twinID) newConfig.twinID = formData.twinID;
+  if (formData.username) newConfig.username = formData.username;
+  if (formData.password) newConfig.password = formData.password;
+  
+  // 处理嵌套的httpServer配置
+  if (formData['httpServer.timeoutInterval']) {
+    if (!newConfig.httpServer) newConfig.httpServer = {};
+    newConfig.httpServer.timeoutInterval = parseInt(formData['httpServer.timeoutInterval']);
+  }
+  
+  updateConfig(newConfig);
   res.status(200).send('ok');
 });
 
 webApp.post('/update-config-restart', requireAuth, (req, res) => {
-  const { port, path, targetUrl } = req.body;
-  const newConfig = { port: parseInt(port), path, targetUrl };
+  // 解析表单数据
+  const formData = req.body;
+  const newConfig = {};
+  
+  // 处理基本配置
+  if (formData.port) newConfig.port = parseInt(formData.port);
+  if (formData.path) newConfig.path = formData.path;
+  if (formData.targetUrl) newConfig.targetUrl = formData.targetUrl;
+  if (formData.twinID) newConfig.twinID = formData.twinID;
+  if (formData.username) newConfig.username = formData.username;
+  if (formData.password) newConfig.password = formData.password;
+  
+  // 处理嵌套的httpServer配置
+  if (formData['httpServer.timeoutInterval']) {
+    if (!newConfig.httpServer) newConfig.httpServer = {};
+    newConfig.httpServer.timeoutInterval = parseInt(formData['httpServer.timeoutInterval']);
+  }
+  
   updateConfig(newConfig);
   res.status(200).send('ok');
-  infologs.unshift({ time: new Date().toLocaleString(), data: '配置已更新，正在热重载报警服务...' });
-  if (infologs.length > 20) infologs.pop();
-  alarmServer.startAlarmService(newConfig, infologs);
+  logger.info('配置已更新，正在热重载报警服务...', 'Config');
+  HttpServer.startAlarmService(newConfig);
 });
 
 webApp.get('/config.html', requireAuth, (req, res) => {
@@ -96,6 +134,11 @@ webApp.get('/config.html', requireAuth, (req, res) => {
 
 webApp.get('/index.html', requireAuth, (req, res) => {
   res.sendFile(pathModule.join(__dirname, 'www', 'index.html'));
+});
+
+// 添加logs.html路由
+webApp.get('/logs.html', requireAuth, (req, res) => {
+  res.sendFile(pathModule.join(__dirname, 'www', 'logs.html'));
 });
 
 webApp.get('/system-info', requireAuth, (req, res) => {
@@ -117,18 +160,16 @@ webApp.get('/system-info', requireAuth, (req, res) => {
 });
 
 webApp.get('/info-log', requireAuth, (req, res) => {
-  res.json(infologs);
+  res.json(logger.getLogs());
 });
 
 webApp.get('/alarm-log', requireAuth, (req, res) => {
-  res.json(alarmServer.alarmlogs);
+  res.json(HttpServer.alarmlogs);
 });
 
 // 启动Web服务器
 webApp.listen(80, () => {
-  console.info('网页控制台已启动: http://localhost/index.html');
-  infologs.unshift({ time: new Date().toLocaleString(), data: '网页控制台已启动' });
-  if (infologs.length > 20) infologs.pop();
+  logger.info('网页控制台已启动: http://localhost/index.html', 'WebServer');
 });
 
 /**

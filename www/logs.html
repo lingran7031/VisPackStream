@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>系统日志</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+    <!-- 侧边导航栏 -->
+    <div class="navbar">
+        <div class="logo">
+            <i class="fas fa-stream"></i> VisPackStream
+        </div>
+        <div class="nav-links">
+            <a href="index.html">
+                <i class="fas fa-home"></i>
+                <span>基础信息</span>
+            </a>
+            <a href="config.html">
+                <i class="fas fa-sliders-h"></i>
+                <span>网络配置</span>
+            </a>
+            <a href="config.html">
+                <i class="fas fa-cog"></i> 
+                <span>系统配置</span>
+            </a>
+            <a href="logs.html" class="active">
+                <i class="fas fa-file-alt"></i> 
+                <span>系统日志</span>
+            </a>
+            <a href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="container" style="width: 100%; max-width: 100%; margin-right: 0;">
+            <!-- 系统日志卡片 -->
+            <div class="card log-card" style="width: 100%;">
+                <!-- 卡片内容不变 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 复制文本功能
+        function copyText(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('已复制到剪贴板');
+        }
+
+        // 获取并显示日志
+        function fetchLogs() {
+            fetch("/info-log")
+                .then(res => res.json())
+                .then(logs => {
+                    if (!Array.isArray(logs)) {
+                        console.error("日志数据格式不正确", logs);
+                        return;
+                    }
+                    
+                    const ul = document.getElementById("log-container");
+                    ul.innerHTML = ''; // 清空现有日志
+                    
+                    logs.forEach(log => {
+                        const li = document.createElement("li");
+                        // 获取日志级别，默认为INFO
+                        const level = log.level || 'INFO';
+                        // 根据日志级别添加样式类
+                        li.className = `log-${level.toLowerCase()}`;
+                        // 格式化日志内容
+                        li.textContent = `[${log.time}] [${level}] ${log.source ? `[${log.source}] ` : ''}${log.data || log.message || ''}`;
+                        // 添加数据属性用于过滤
+                        li.dataset.level = level.toLowerCase();
+                        ul.appendChild(li);
+                    });
+                })
+                .catch(err => {
+                    console.error("获取日志失败", err);
+                });
+        }
+        
+        // 初始加载日志
+        fetchLogs();
+        
+        // 设置日志过滤器
+        document.querySelectorAll('.log-filter button').forEach(button => {
+            button.addEventListener('click', function() {
+                // 移除所有按钮的active类
+                document.querySelectorAll('.log-filter button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 为当前按钮添加active类
+                this.classList.add('active');
+                
+                const level = this.dataset.level;
+                const logItems = document.querySelectorAll('#log-container li');
+                
+                logItems.forEach(item => {
+                    if (level === 'all' || item.dataset.level === level) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // 定时刷新日志
+        setInterval(fetchLogs, 10000); // 每10秒刷新一次
+    </script>
+</body>
+
+</html>
