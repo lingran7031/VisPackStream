@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>网络配置</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+    <!-- 侧边导航栏 -->
+    <div class="navbar">
+        <div class="logo">
+            <i class="fas fa-stream"></i> VisPackStream
+        </div>
+        <div class="nav-links">
+            <a href="index.html">
+                <i class="fas fa-home"></i>
+                <span>基础信息</span>
+            </a>
+            <a href="network.html" class="active">
+                <i class="fas fa-network-wired"></i>
+                <span>网络配置</span>
+            </a>
+            <a href="config.html">
+                <i class="fas fa-cog"></i> 
+                <span>系统配置</span>
+            </a>
+            <a href="logs.html">
+                <i class="fas fa-file-alt"></i>
+                <span>系统日志</span>
+            </a>
+            <a href="/logout" style="margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出登录</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <h1><i class="fas fa-network-wired"></i> 网络配置</h1>
+        
+        <!-- 当前网络状态卡片 -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> 当前网络状态
+            </div>
+            <div class="card-body">
+                <div class="network-status">
+                    <div class="status-item">
+                        <label><i class="fas fa-globe"></i> IP地址:</label>
+                        <span id="current-ip">获取中...</span>
+                    </div>
+                    <div class="status-item">
+                        <label><i class="fas fa-mask"></i> 子网掩码:</label>
+                        <span id="current-netmask">获取中...</span>
+                    </div>
+                    <div class="status-item">
+                        <label><i class="fas fa-route"></i> 网关:</label>
+                        <span id="current-gateway">获取中...</span>
+                    </div>
+                    <div class="status-item">
+                        <label><i class="fas fa-server"></i> DNS服务器:</label>
+                        <span id="current-dns">获取中...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="network-form">
+            <!-- 网络配置卡片 -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-cogs"></i> 网络设置
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="config-type"><i class="fas fa-list"></i> 配置类型</label>
+                        <select id="config-type" name="configType" required>
+                            <option value="dhcp">DHCP自动获取</option>
+                            <option value="static">静态IP配置</option>
+                        </select>
+                    </div>
+                    
+                    <div id="static-config" style="display: none;">
+                        <div class="form-group">
+                            <label for="ip-address"><i class="fas fa-globe"></i> IP地址</label>
+                            <input type="text" id="ip-address" name="ipAddress" placeholder="例如: 192.168.1.100" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" />
+                        </div>
+                        <div class="form-group">
+                            <label for="netmask"><i class="fas fa-mask"></i> 子网掩码</label>
+                            <input type="text" id="netmask" name="netmask" placeholder="例如: 255.255.255.0" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" />
+                        </div>
+                        <div class="form-group">
+                            <label for="gateway"><i class="fas fa-route"></i> 网关</label>
+                            <input type="text" id="gateway" name="gateway" placeholder="例如: 192.168.1.1" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" />
+                        </div>
+                        <div class="form-group">
+                            <label for="dns-servers"><i class="fas fa-server"></i> DNS服务器</label>
+                            <input type="text" id="dns-servers" name="dnsServers" placeholder="例如: 8.8.8.8,8.8.4.4" />
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> 应用网络配置
+                    </button>
+                    <button type="button" id="restart-network" class="btn-secondary">
+                        <i class="fas fa-sync-alt"></i> 重启网络服务
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="status" class="status-message"></div>
+    </div>
+
+    <script>
+        // 加载当前网络配置
+        function loadNetworkConfig() {
+            fetch("/get-network-config")
+                .then(res => res.json())
+                .then(config => {
+                    // 更新当前状态显示
+                    document.getElementById("current-ip").textContent = config.current?.ip || "未知";
+                    document.getElementById("current-netmask").textContent = config.current?.netmask || "未知";
+                    document.getElementById("current-gateway").textContent = config.current?.gateway || "未知";
+                    document.getElementById("current-dns").textContent = config.current?.dns || "未知";
+                    
+                    // 设置表单值
+                    document.getElementById("config-type").value = config.type || "dhcp";
+                    if (config.type === "static") {
+                        document.getElementById("ip-address").value = config.ip || "";
+                        document.getElementById("netmask").value = config.netmask || "";
+                        document.getElementById("gateway").value = config.gateway || "";
+                        document.getElementById("dns-servers").value = config.dns || "";
+                        document.getElementById("static-config").style.display = "block";
+                    }
+                })
+                .catch(err => {
+                    console.error("获取网络配置失败:", err);
+                    showStatus("❌ 获取网络配置失败: " + err.message, "error");
+                });
+        }
+
+        // 配置类型切换
+        document.getElementById("config-type").addEventListener("change", function() {
+            const staticConfig = document.getElementById("static-config");
+            if (this.value === "static") {
+                staticConfig.style.display = "block";
+                // 设置必填属性
+                document.getElementById("ip-address").required = true;
+                document.getElementById("netmask").required = true;
+                document.getElementById("gateway").required = true;
+            } else {
+                staticConfig.style.display = "none";
+                // 移除必填属性
+                document.getElementById("ip-address").required = false;
+                document.getElementById("netmask").required = false;
+                document.getElementById("gateway").required = false;
+            }
+        });
+
+        // 处理表单提交
+        document.getElementById("network-form").addEventListener("submit", e => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const networkConfig = Object.fromEntries(formData);
+
+            showStatus("⏳ 正在应用网络配置...", "info");
+
+            fetch("/update-network-config", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(networkConfig)
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    showStatus("✅ 网络配置已更新，正在重启网络服务...", "success");
+                    // 延迟重新加载配置
+                    setTimeout(loadNetworkConfig, 3000);
+                } else {
+                    showStatus("❌ 网络配置更新失败: " + result.message, "error");
+                }
+            })
+            .catch(err => {
+                showStatus("❌ 网络配置更新失败: " + err.message, "error");
+            });
+        });
+
+        // 重启网络服务
+        document.getElementById("restart-network").addEventListener("click", function() {
+            showStatus("⏳ 正在重启网络服务...", "info");
+            
+            fetch("/restart-network", {
+                method: "POST"
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    showStatus("✅ 网络服务已重启", "success");
+                    setTimeout(loadNetworkConfig, 3000);
+                } else {
+                    showStatus("❌ 重启网络服务失败: " + result.message, "error");
+                }
+            })
+            .catch(err => {
+                showStatus("❌ 重启网络服务失败: " + err.message, "error");
+            });
+        });
+
+        // 显示状态消息
+        function showStatus(message, type) {
+            const statusEl = document.getElementById("status");
+            statusEl.textContent = message;
+            statusEl.className = "status-message " + type;
+            
+            // 3秒后清除状态消息
+            setTimeout(() => {
+                statusEl.textContent = "";
+                statusEl.className = "status-message";
+            }, 3000);
+        }
+
+        // 页面加载时获取网络配置
+        loadNetworkConfig();
+    </script>
+</body>
+
+</html>
