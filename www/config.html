@@ -119,10 +119,21 @@
                 document.getElementById("password").value = config.password;
                 
                 // 设置计时器配置
-                document.getElementById("timeoutInterval").value = config.httpServer?.timeoutInterval || 60000;
+                document.getElementById("timeoutInterval").value = config.httpServer?.timeoutInterval || config.timeoutInterval || 60000;
             });
             
-
+        // 添加缺失的 updateTimerStatus 函数
+        function updateTimerStatus() {
+            fetch("/alarm-timer-status")
+                .then(res => res.json())
+                .then(status => {
+                    console.log('计时器状态已更新:', status);
+                    // 可以在这里添加UI更新逻辑
+                })
+                .catch(err => {
+                    console.error('获取计时器状态失败:', err);
+                });
+        }
 
         // 处理表单提交
         document.getElementById("config-form").addEventListener("submit", e => {

@@ -74,8 +74,14 @@ webApp.get('/alarm-log', requireAuth, (req, res) => {
   res.json(HttpServer.alarmlogs);
 });
 
+// 添加计时器状态API
+webApp.get('/alarm-timer-status', requireAuth, (req, res) => {
+  const HttpServer = require('./lib/HttpServer');
+  const status = HttpServer.getTimerStatus();
+  res.json(status);
+});
 
-
+// 网络配置相关接口
 webApp.get('/get-config', requireAuth, (req, res) => {
   res.json(getConfig());
 });
